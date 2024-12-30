@@ -1,0 +1,17 @@
+name: salesForecast_train-env
+channels:
+  - conda-forge
+dependencies:
+- python=3.9
+- pip=21.2.4
+- pip:
+  - mlflow
+  - azureml-mlflow
+  - joblib
+  - scikit-learn==1.5.1
+  - matplotlib==3.9.2
+  - pandas==2.2.2
+  - numpy==2.0.2
+  - azureml-inference-server-http==1.4.0
+  - azureml-ai-monitoring==1.0.0
+  - torch==2.5.1

@@ -1,0 +1,48 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+experiment_name: sales_forecast_experiment
+# This defines the inputs for the pipeline
+inputs:
+  input_data:
+    type: uri_folder
+    mode: ro_mount
+    path: azureml:sales-forecast-data@latest
+# This defines the outputs for the pipeline
+outputs:
+  model:
+    type: mlflow_model
+    mode: rw_mount
+
+# The jobs to be run in the pipeline
+jobs:
+  preprocess: #change name as needed
+    type: command
+    component: azureml:sales_preprocess@latest
+    # invoke completions (Ctrl+Space, Cmd+Space) to see the list of computes available
+    compute: azureml:gpu-cluster
+    # This defines the inputs for job 1
+    inputs:
+      input_data:
+        type: uri_folder
+        mode: ro_mount
+        path: ${{parent.inputs.input_data}}
+    # This defines the outputs for job 1
+    outputs:
+      output_data:
+        type: uri_folder
+        mode: rw_mount
+        path: ${{parent.outputs.output_data}}
+  train:
+    type: command
+    component: azureml:sales_train@latest
+    compute: azureml:gpu-cluster
+    inputs:
+      preprocessed_data:
+        type: uri_folder
+        mode: ro_mount
+        path: ${{parent.jobs.preprocess.outputs.output_data}}
+    outputs:
+      model:
+        type: mlflow_model
+        mode: rw_mount
+        path: ${{parent.outputs.model}}
