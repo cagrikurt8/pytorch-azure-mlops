@@ -1,0 +1,18 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+#enter name for the component
+name: sales_preprocess
+#enter path to your script files
+code: ../preprocess
+#use scripts in Python, R, Java, Julia, C#. Here we have shown python
+command: python preprocess.py --input_data ${{inputs.input_data}} --output_data ${{outputs.output_data}}
+# invoke completions (Ctrl+Space, Cmd+Space) to see the list of environments available
+environment: azureml://registries/azureml/environments/acpt-pytorch-2.2-cuda12.1/versions/24
+# This defines the placeholders for input data. The names of the items in inputs can be referenced in the command
+inputs:
+  input_data:
+    type: uri_folder
+# This defines the placeholders for output data. The names of the items in outputs can be referenced in the command
+outputs:
+  output_data:
+    type: uri_folder

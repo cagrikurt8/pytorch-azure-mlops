@@ -1,0 +1,24 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+#enter name for the component
+name: sales_train
+#enter path to your script files
+code: ../train
+#use scripts in Python, R, Java, Julia, C#. Here we have shown python
+command: python train.py --preprocessed_data ${{inputs.preprocessed_data}} --model ${{outputs.model}}
+# invoke completions (Ctrl+Space, Cmd+Space) to see the list of environments available
+environment: azureml://registries/azureml/environments/acpt-pytorch-2.2-cuda12.1/versions/24
+# This defines the placeholders for input data. The names of the items in inputs can be referenced in the command
+inputs:
+  preprocessed_data:
+    type: uri_folder
+  epochs:
+    type: integer
+    default: 100
+  learning_rate:
+    type: number
+    default: 0.001
+# This defines the placeholders for output data. The names of the items in outputs can be referenced in the command
+outputs:
+  model:
+    type: mlflow_model
