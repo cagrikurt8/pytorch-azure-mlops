@@ -7,7 +7,7 @@ code: ../train
 #use scripts in Python, R, Java, Julia, C#. Here we have shown python
 command: python train.py --preprocessed_data ${{inputs.preprocessed_data}} --model ${{outputs.model}}
 # invoke completions (Ctrl+Space, Cmd+Space) to see the list of environments available
-environment: azureml://registries/azureml/environments/acpt-pytorch-2.2-cuda12.1/versions/24
+environment: azureml:sales_forecast_env@latest
 # This defines the placeholders for input data. The names of the items in inputs can be referenced in the command
 inputs:
   preprocessed_data:

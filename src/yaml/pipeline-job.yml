@@ -31,7 +31,6 @@ jobs:
       output_data:
         type: uri_folder
         mode: rw_mount
-        path: ${{parent.outputs.output_data}}
   train:
     type: command
     component: azureml:sales_train@latest
