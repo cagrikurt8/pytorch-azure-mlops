@@ -4,4 +4,4 @@ name: sales_forecast_env
 #image to be used
 image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04
 #conda file to customize image
-conda_file: ../environments/train-packages.yml
+conda_file: ../environments/sales-forecast-packages.yml
