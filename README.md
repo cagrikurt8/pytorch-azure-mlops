@@ -1,11 +1,6 @@
-# pytorch-azure-mlops
-PyTorch MLOps with Azure Machine Learning
-
-This repo is an implementation of a MLOps architecture on Azure Machine Learning with a PyTorch model. Public Walmart weekly sales data is used in this solution. The model is a simple regression model which predicts weekly sales of stores.
-
 # MLOps with Azure ML for PyTorch Model
 
-This repository demonstrates an MLOps solution using Azure Machine Learning (Azure ML) for a PyTorch model. The repository includes scripts for data preprocessing, training, and various YAML files for Azure ML components, pipelines, environment, data, and endpoints.
+This repository demonstrates an MLOps solution using Azure Machine Learning (Azure ML) for a PyTorch model. Public Walmart weekly sales data is used in this solution. The model is a simple regression model which predicts weekly sales of stores. The repository includes scripts for data preprocessing, training, and various YAML files for Azure ML components, pipelines, environment, data, and endpoints.
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
