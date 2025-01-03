@@ -1,0 +1,9 @@
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
+# enter name of deployment
+name: sales-pytorch-deployment-prod
+# enter endpoint on which to be deployed
+endpoint_name: sales-pytorch-endpoint
+model: azureml:SalesPredictor-PyTorch@latest
+# invoke completions (Ctrl+Space, Cmd+Space) to see the list of environments available
+instance_type: Standard_DS2_v2
+instance_count: 1

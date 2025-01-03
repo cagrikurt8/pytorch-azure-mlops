@@ -1,0 +1,1 @@
+az ml online-endpoint invoke --name sales-pytorch-endpoint --request-file sample_request.json --workspace-name ckurt-aml-workspace --resource-group CK_AI-ML
