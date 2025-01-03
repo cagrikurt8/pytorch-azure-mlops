@@ -40,5 +40,8 @@ Make sure you have the following tools installed:
    ```sh
     az ml component create --file ./src/yaml/preprocess-component.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
     ```
+   ```sh
+    az ml component create --file ./src/yaml/train-component.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
+    ```
 
 
