@@ -235,7 +235,7 @@ def merge_df_on_store(df1, df2):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_data', type=str, help='input file path')
-    parser.add_argument('--lr', type=float, dest='learning_rate', default=0.001, help='learning rate for optimizer')
+    parser.add_argument('--lr', type=float, default=0.001, help='learning rate for optimizer')
     parser.add_argument('--epochs', type=int, default=100, help='number of epochs')
     parser.add_argument('--model', type=str, help='output model path')
     return parser.parse_args()
