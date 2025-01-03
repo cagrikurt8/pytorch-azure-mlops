@@ -1,3 +1,8 @@
+import argparse
+import pandas as pd
+import os
+import glob
+from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.compose import ColumnTransformer
@@ -8,13 +13,9 @@ import torch.optim as optim
 import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.pipeline import Pipeline
-import argparse
 import matplotlib.pyplot as plt
 import mlflow
 from sklearn.metrics import mean_squared_error, root_mean_squared_error
-import os
-import glob
-import pandas as pd
 from mlflow.models import infer_signature
 
 
@@ -138,7 +139,12 @@ def main(args, device):
     mlflow.sklearn.autolog(registered_model_name="SalesPredictor-PyTorch",
                            log_input_examples=True)
     
-    train_df = load_data(args.preprocessed_data)
+    features_df, stores_df, train_df = load_data(args.input_data)
+    
+    train_df = preprocess_data(features_df, stores_df, train_df)
+
+    assert set(train_df.columns.tolist()) == set(['Store', 'IsHoliday', 'Dept', 'Weekly_Sales', 'Temperature', 'Fuel_Price', 'MarkDown1', 'MarkDown2', 'MarkDown3', 'MarkDown4', 'MarkDown5', 'CPI', 'Unemployment', 'Month', 'Year', 'Week', 'Type', 'Size']), "The CSV file doesn't contain the expected columns."
+    
     X, y = train_df.drop(["Weekly_Sales"], axis=1), train_df["Weekly_Sales"].values
 
     ct = ColumnTransformer(
@@ -147,7 +153,7 @@ def main(args, device):
 
     training_pipeline = TrainingPipeline([
         ('preprocessor', ct),
-        ('pytorch_regressor', PyTorchRegressor(input_dim=X.shape[1], epochs=args.epochs, batch_size=32, learning_rate=args.learning_rate, device=device))
+        ('pytorch_regressor', PyTorchRegressor(input_dim=X.shape[1], epochs=args.epochs, batch_size=32, learning_rate=args.lr, device=device))
     ])
 
     X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=0)
@@ -180,7 +186,7 @@ def main(args, device):
                      artifact_path="model",
                      input_example=X_train.iloc[:2],
                      signature=infer_signature(X_test, y_test))
-    
+
 
 def load_data(path):
     if not os.path.exists(path):
@@ -188,20 +194,55 @@ def load_data(path):
     csv_files = glob.glob(f"{path}/*.csv")
     if not csv_files:
         raise RuntimeError(f"No CSV files found in provided data path: {path}")
-    train_df = pd.read_csv(f"{path}/sales-forecast-train.csv")
+    
+    return pd.read_csv(f"{path}/features.csv"), pd.read_csv(f"{path}/stores.csv"), pd.read_csv(f"{path}/train.csv")
+
+
+def preprocess_data(features_data, stores_data, train_data):
+    train_df = train_data.set_index(['Store', 'Date', 'IsHoliday'])
+    features_data = features_data.set_index(['Store', 'Date', 'IsHoliday'])
+
+    train_df = merge_df_on_date(train_df, features_data).reset_index()
+    train_df = add_date_to_columns(train_df)
+
+    train_df = train_df.fillna(0)
+
+    train_df = merge_df_on_store(train_df, stores_data)
+    
+    type_mapping = {'A': 3, 'B': 2, 'C': 1}
+    train_df['Type'] = train_df['Type'].map(type_mapping)
+
     return train_df
+
+
+def add_date_to_columns(df):
+    df['Date'] = pd.to_datetime(df['Date'])
+    df = df.set_index('Date')
+    df['Month'] = df.index.month
+    df['Year'] = df.index.year
+    df['Week'] = (df.index.isocalendar().week % 4) + 1
+    return df
+
+
+def merge_df_on_date(df1, df2):
+    return df1.join(df2)
+
+
+def merge_df_on_store(df1, df2):
+    return df1.merge(df2, on='Store')
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--preprocessed_data', type=str)
-    parser.add_argument('--model', type=str)
-    parser.add_argument('--epochs', type=int, default=100)
-    parser.add_argument('--learning_rate', type=float, default=0.001)
+    parser.add_argument('--input_data', type=str, help='input file path')
+    parser.add_argument('--lr', type=float, dest='learning_rate', default=0.001, help='learning rate for optimizer')
+    parser.add_argument('--epochs', type=int, default=100, help='number of epochs')
+    parser.add_argument('--model', type=str, help='output model path')
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f'Using device: {device}')
-    main(parse_args(), device)
+    args = parse_args()
+    main(args, device)
