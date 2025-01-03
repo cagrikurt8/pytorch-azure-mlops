@@ -26,6 +26,24 @@ Make sure you have the following tools installed:
 - [Python 3.x](https://www.python.org/downloads/)
 - [PyTorch](https://pytorch.org/get-started/locally/)
 
-## Repository Structure
+## Setup
+
+1. Clone the repository:
+    ```sh
+    git clone <repository-url>
+    cd <repository-name>
+    ```
+
+2. Set up your Azure ML workspace. Follow the [Azure ML documentation](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-setup) for configuring a workspace.
+
+3. Set up a Custom Environment on Azure ML workspace:
+    ```sh
+    az ml environment create --file ./src/yaml/environment.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
+    ```
+    
+4. Register Command Components to Azure ML:
+   ```sh
+    az ml component create --file ./src/yaml/preprocess-component.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
+    ```
 
 
