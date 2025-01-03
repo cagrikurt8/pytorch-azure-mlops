@@ -4,14 +4,7 @@ This repository demonstrates an MLOps solution using Azure Machine Learning (Azu
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
-- [Repository Structure](#repository-structure)
 - [Setup](#setup)
-- [Data Preprocessing](#data-preprocessing)
-- [Model Training](#model-training)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Prerequisites
 
