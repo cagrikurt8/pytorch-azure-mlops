@@ -1,0 +1,5 @@
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineEndpoint.schema.json
+# enter endpoint on which to be deployed
+name: sales-pytorch-endpoint
+# invoke completions (Ctrl+Space, Cmd+Space) to see the list of auth modes available
+auth_mode: key
