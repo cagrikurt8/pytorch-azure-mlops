@@ -36,7 +36,7 @@ Make sure you have the following tools installed:
     az ml environment create --file ./src/yaml/environment.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
     ```
     
-4. Register Command Components to Azure ML:
+4. Register Command Components to Azure ML Workspace:
    ```sh
     az ml component create --file ./src/yaml/preprocess-component.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
     ```
@@ -44,4 +44,27 @@ Make sure you have the following tools installed:
     az ml component create --file ./src/yaml/train-component.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
     ```
 
+5. Register Data Asset to Azure ML Workspace:
+   ```sh
+    az ml data create --file ./src/yaml/data.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
+    ```
 
+6. Submit a model training job on Azure ML Workspace:
+   ```sh
+    az ml job create --file ./src/yaml/pipeline-job.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
+    ```
+
+7. Create a Real-Time endpoint for inference on Azure ML Workspace:
+   ```sh
+    az ml online-endpoint create --file ./src/yaml/endpoint.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
+    ```
+
+8. Deploy the trained model to the endpoint on Azure ML Workspace:
+   ```sh
+    az ml online-deployment create --file ./src/yaml/deployment.yml --resource-group $(resource_group) --workspace-name $(workspace_name)
+    ```
+
+9. Invoke the endpoint to see predictions:
+    ```sh
+    az ml online-endpoint invoke --name sales-pytorch-endpoint --request-file ./src/onlinescoring/sample_request.json --resource-group $(resource_group) --workspace-name $(workspace_name)
+    ```
