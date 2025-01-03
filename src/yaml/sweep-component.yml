@@ -1,0 +1,30 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+
+name: sweep_job
+display_name: Sweep Job
+
+inputs: 
+  input_data:
+    type: uri_folder
+  epochs:
+    type: integer
+    default: 100
+  learning_rate:
+    type: number
+    default: 0.001
+
+outputs:
+  model:
+    type: mlflow_model
+  
+code: ../sweep
+
+environment: azureml:sales_forecast_env@latest
+
+command: >-
+  python sweep.py 
+  --input_data ${{inputs.input_data}}
+  --lr ${{inputs.learning_rate}}
+  --epochs ${{inputs.epochs}}
+  --model ${{outputs.model}}

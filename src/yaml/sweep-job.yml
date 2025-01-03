@@ -1,28 +1,37 @@
 $schema: https://azuremlschemas.azureedge.net/latest/sweepJob.schema.json
 type: sweep
+inputs:
+  input_data:
+    type: uri_folder
+    mode: ro_mount
+    path: azureml:sales-forecast-data@latest
+outputs:
+    model:
+      type: mlflow_model
+      mode: rw_mount
 # invoke completions (Ctrl+Space, Cmd+Space) to see options allowed
 experiment_name: sales_forecast_sweep_experiment
 sampling_algorithm: random
+trial:
+  code: ../sweep
+  environment: azureml:sales_forecast_env@latest
+  command: >-
+    python sweep.py 
+    --input_data ${{inputs.input_data}}
+    --lr ${{search_space.learning_rate}}
+    --epochs ${{search_space.epochs}}
+    --model ${{outputs.model}}
 search_space:
   learning_rate:
     type: uniform
     min_value: 0.001
     max_value: 0.1
   epochs:
-    type: randint
-    upper: 200
-  dropout_rate:
-    type: uniform
-    min_value: 0.1
-    max_value: 0.5
+    type: choice
+    values: [10, 50, 70, 100, 150]
 objective:
   primary_metric: RMSE
   goal: minimize
-trial:
-  command: python <placeholder-for-your-script-name> --lr ${{search_space.lr}} --conv_size ${{search_space.conv_size}} --dropout_rate ${{search_space.dropout_rate}}
-  code: <placeholder-for-path-to-your-code>
-  # invoke completions (Ctrl+Space, Cmd+Space) to see the list of environments available
-  environment: azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1
 limits:
   max_total_trials: 20
   max_concurrent_trials: 5
