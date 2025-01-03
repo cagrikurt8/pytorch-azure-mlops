@@ -12,6 +12,15 @@ outputs:
 # invoke completions (Ctrl+Space, Cmd+Space) to see options allowed
 experiment_name: sales_forecast_sweep_experiment
 sampling_algorithm: random
+trial:
+  code: ../sweep
+  environment: azureml:sales_forecast_env@latest
+  command: >-
+    python sweep.py 
+    --input_data ${{inputs.input_data}}
+    --lr ${{search_space.learning_rate}}
+    --epochs ${{search_space.epochs}}
+    --model ${{outputs.model}}
 search_space:
   learning_rate:
     type: uniform
@@ -23,11 +32,6 @@ search_space:
 objective:
   primary_metric: RMSE
   goal: minimize
-trial:
-  command: python sweep.py --input_data ${{inputs.input_data}} --lr ${{search_space.learning_rate}} --epochs ${{search_space.epochs}} --model {{outputs.model}}
-  code: ../sweep
-  # invoke completions (Ctrl+Space, Cmd+Space) to see the list of environments available
-  environment: azureml:sales_forecast_env@latest
 limits:
   max_total_trials: 20
   max_concurrent_trials: 5
